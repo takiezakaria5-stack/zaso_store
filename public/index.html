@@ -111,12 +111,14 @@
                 clickCount = 0;
                 const password = prompt("أدخل كلمة سر الإدارة لإضافة منتج جديد:");
                 // تم تحديث كلمة السر إلى kenouni19
-                if (password === "kenouni19") {
-                    toggleAdminModal();
+                if (password === "kenouni19") {     
+                toggleAdminModal();
+    document.querySelectorAll('.admin-delete-btn').forEach(btn => btn.style.display = 'inline-block');
+}
+
                 } else if (password !== null) {
                     alert("كلمة السر غير صحيحة!");
-                }
-            }
+                }            }
         }
 
         async function loadProducts() {
