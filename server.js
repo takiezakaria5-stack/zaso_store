@@ -54,3 +54,11 @@ app.post('/api/products', upload.array('images', 5), (req, res) => {
 app.listen(PORT, () => {
     console.log(`ZASO Store is running on http://localhost:${PORT}`);
 });
+// مسار حذف منتج
+app.delete('/api/products/:id', (req, res) => {
+    const id = req.params.id;
+    let products = JSON.parse(fs.readFileSync(productsFile));
+    products = products.filter(p => p.id != id);
+    fs.writeFileSync(productsFile, JSON.stringify(products, null, 2));
+    res.json({ success: true });
+});

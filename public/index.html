@@ -220,3 +220,19 @@
     </script>
 </body>
 </html>
+</script>
+<script>
+async function deleteProduct(id) {
+    if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
+        const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.success) {
+            alert("تم حذف المنتج بنجاح!");
+            location.reload();
+        }
+    }
+}
+</script>
+
+</body>
+</html>
