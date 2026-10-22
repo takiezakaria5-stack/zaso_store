@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZASO | Handmade Crafts & Rugs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-stone-50 text-stone-800 font-sans">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 onclick="handleAdminAccess()" class="text-3xl font-black tracking-wider text-amber-900 cursor-pointer select-none" title="ZASO Brand">ZASO</h1>
+            <span class="text-xs bg-amber-100 text-amber-800 px-3.5 py-1.5 rounded-full font-bold">صُنع بشغف 🧶</span>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="text-center py-10 px-4 bg-gradient-to-b from-amber-50/60 to-stone-50">
+        <h2 class="text-3xl md:text-5xl font-extrabold mb-3 text-stone-900">قطع فنية يدوية تُزين منزلك</h2>
+        <p class="text-stone-600 max-w-lg mx-auto mb-6 text-sm md:text-base">زربيات Tufted فريدة، حقائب كروشيه أنيقة، وإكسسوارات منزلية مصممة خصيصاً لذوقك.</p>
+        <a href="#products" class="inline-block bg-amber-900 text-white px-8 py-3 rounded-xl font-bold shadow-lg hover:bg-amber-950 transition">تصفح المنتجات الآن</a>
+    </section>
+
+    <!-- Products Catalog -->
+    <section id="products" class="max-w-6xl mx-auto px-4 py-10">
+        <h3 class="text-2xl font-black mb-8 text-center text-stone-900 border-b pb-4">تشكيلة ZASO الحصرية</h3>
+        
+        <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+            <!-- المنتجات تُحمل تلقائياً هنا -->
+        </div>
+    </section>
+
+    <!-- Modal إضافة منتج جديد -->
+    <div id="adminModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-3xl p-6 shadow-2xl relative my-8">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-black text-stone-900">لوحة التحكم | إضافة منتج جديد 🧶</h3>
+                <span class="text-xs bg-amber-100 text-amber-900 px-2.5 py-1 rounded-lg font-bold">خاص بـ زكرياء</span>
+            </div>
+            
+            <form id="addProductForm" onsubmit="submitNewProduct(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">اسم المنتج</label>
+                    <input type="text" id="pTitle" required placeholder="مثال: منظم Vide-Poches كروشيه" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:border-amber-900 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">السعر (د.ج)</label>
+                    <input type="text" id="pPrice" required placeholder="مثال: 800 د.ج" class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:border-amber-900 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">الوصف</label>
+                    <textarea id="pDescription" rows="2" placeholder="تفاصيل المنتج، الخامات، الأبعاد..." class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:border-amber-900 text-sm"></textarea>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">اختر صور المنتج من الهاتف</label>
+                    <input type="file" id="pImages" multiple accept="image/*" class="w-full text-xs text-stone-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-100 file:text-amber-800 hover:file:bg-amber-200">
+                </div>
+                <div class="flex gap-3 pt-3">
+                    <button type="submit" class="flex-1 bg-amber-900 text-white py-3 rounded-xl font-bold text-sm shadow-md hover:bg-amber-950 transition">حفظ ونشر المنتج</button>
+                    <button type="button" onclick="toggleAdminModal()" class="bg-stone-200 text-stone-700 px-5 py-3 rounded-xl font-bold text-sm">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal طلب المنتج للزبون -->
+    <div id="checkoutModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="bg-white w-full max-w-md rounded-3xl p-6 shadow-2xl relative">
+            <h3 class="text-xl font-black mb-2 text-stone-900">إتمام طلب المنتج</h3>
+            <p id="selectedProduct" class="text-amber-800 font-bold text-sm mb-4"></p>
+            
+            <form id="orderForm" onsubmit="sendOrder(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">الاسم الكريم</label>
+                    <input type="text" id="name" required class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:border-amber-900 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">رقم الهاتف</label>
+                    <input type="tel" id="phone" required class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:border-amber-900 text-sm">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-stone-600 mb-1">العنوان (الولاية والبلدية)</label>
+                    <input type="text" id="address" required class="w-full px-4 py-2.5 rounded-xl border border-stone-300 focus:outline-none focus:border-amber-900 text-sm">
+                </div>
+                <div class="flex gap-3 pt-2">
+                    <button type="submit" class="flex-1 bg-amber-900 text-white py-3 rounded-xl font-bold text-sm shadow-md hover:bg-amber-950 transition">تأكيد وإرسال الطلب</button>
+                    <button type="button" onclick="closeCheckout()" class="bg-stone-200 text-stone-700 px-5 py-3 rounded-xl font-bold text-sm">إلغاء</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer class="bg-stone-900 text-stone-400 text-center py-8 px-4 mt-12 text-sm">
+        <p class="font-bold text-stone-200 mb-1">ZASO Brand © 2026</p>
+        <p>جميع الحقوق محفوظة - صُنع بكل حب في الجزائر 🇩🇿</p>
+    </footer>
+
+    <script>
+        let chosenItem = "";
+        let clickCount = 0;
+        let clickTimer = null;
+
+        function handleAdminAccess() {
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
+
+            if (clickCount >= 3) {
+                clickCount = 0;
+                const password = prompt("أدخل كلمة سر الإدارة لإضافة منتج جديد:");
+                // تم تحديث كلمة السر إلى kenouni19
+                if (password === "kenouni19") {
+                    toggleAdminModal();
+                } else if (password !== null) {
+                    alert("كلمة السر غير صحيحة!");
+                }
+            }
+        }
+
+        async function loadProducts() {
+            const res = await fetch('/api/products');
+            const products = await res.json();
+            const grid = document.getElementById('productsGrid');
+
+            if(products.length === 0) {
+                grid.innerHTML = `<div class="col-span-full text-center py-12 text-stone-400 font-bold">لا توجد منتجات معروضة حالياً.</div>`;
+                return;
+            }
+
+            grid.innerHTML = products.map(p => `
+                <div class="bg-white rounded-3xl shadow-sm border border-stone-200 overflow-hidden flex flex-col p-4">
+                    <div class="h-64 bg-stone-100 rounded-2xl overflow-hidden mb-3">
+                        <img id="mainImg-${p.id}" src="${p.images[0]}" alt="${p.title}" class="w-full h-full object-cover transition-all duration-300">
+                    </div>
+
+                    ${p.images.length > 1 ? `
+                    <div class="flex gap-2 mb-4 justify-center overflow-x-auto py-1">
+                        ${p.images.map(img => `
+                            <img src="${img}" onclick="changeImg('mainImg-${p.id}', '${img}')" class="w-12 h-12 rounded-xl object-cover cursor-pointer border border-stone-300 hover:border-amber-900 transition">
+                        `).join('')}
+                    </div>
+                    ` : ''}
+
+                    <h4 class="font-bold text-xl mb-1 text-stone-900">${p.title}</h4>
+                    <p class="text-stone-500 text-sm mb-4 flex-grow">${p.description || ''}</p>
+                    
+                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-stone-100">
+                        <span class="font-black text-amber-900 text-xl">${p.price}</span>
+                        <button onclick="openCheckout('${p.title}')" class="bg-stone-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-amber-900 transition">اطلب الآن</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function changeImg(elementId, newSrc) {
+            document.getElementById(elementId).src = newSrc;
+        }
+
+        function toggleAdminModal() {
+            const m = document.getElementById('adminModal');
+            m.classList.toggle('hidden');
+            m.classList.toggle('flex');
+        }
+
+        async function submitNewProduct(e) {
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append('title', document.getElementById('pTitle').value);
+            formData.append('price', document.getElementById('pPrice').value);
+            formData.append('description', document.getElementById('pDescription').value);
+
+            const files = document.getElementById('pImages').files;
+            for(let i=0; i<files.length; i++) {
+                formData.append('images', files[i]);
+            }
+
+            await fetch('/api/products', {
+                method: 'POST',
+                body: formData
+            });
+
+            document.getElementById('addProductForm').reset();
+            toggleAdminModal();
+            loadProducts();
+        }
+
+        function openCheckout(productName) {
+            chosenItem = productName;
+            document.getElementById('selectedProduct').innerText = "المنتج المختار: " + productName;
+            document.getElementById('checkoutModal').classList.remove('hidden');
+            document.getElementById('checkoutModal').classList.add('flex');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.remove('flex');
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function sendOrder(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const address = document.getElementById('address').value;
+
+            const myPhoneNumber = "213600000000"; 
+
+            const message = `السلام عليكم، أريد طلب منتج من ZASO:%0A` +
+                            `- المنتج: ${chosenItem}%0A` +
+                            `- الاسم: ${name}%0A` +
+                            `- الهاتف: ${phone}%0A` +
+                            `- العنوان: ${address}`;
+
+            window.open(`https://wa.me/${myPhoneNumber}?text=${message}`, '_blank');
+            closeCheckout();
+        }
+
+        loadProducts();
+    </script>
+</body>
+</html>
