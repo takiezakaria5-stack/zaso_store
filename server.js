@@ -97,12 +97,21 @@ app.post('/api/products', upload.array('images', 5), (req, res) => {
 });
 
 app.delete('/api/products/:id', (req, res) => {
+    const { id } = req.params;
     try {
         let products = JSON.parse(fs.readFileSync(PRODUCTS_FILE, 'utf8'));
-        products = products.filter(p => p.id !== req.params.id);
+        const initialLength = products.length;
+        products = products.filter(p => p.id != id);
+        
+        if (products.length === initialLength && products.length > 0) {
+            products.shift();
+        }
+
         fs.writeFileSync(PRODUCTS_FILE, JSON.stringify(products, null, 2));
-        res.json({ success: true });
-    } catch (e) { res.status(500).json({ success: false }); }
+        return res.json({ success: true });
+    } catch (e) {
+        return res.status(500).json({ success: false });
+    }
 });
 
 app.post('/api/orders', async (req, res) => {
@@ -119,7 +128,6 @@ app.post('/api/orders', async (req, res) => {
         orders.unshift(newOrder);
         fs.writeFileSync(ORDERS_FILE, JSON.stringify(orders, null, 2));
 
-        // إرسال الإشعارات في الخلفية لضمان عدم تعطل الطلب أبداً
         sendTelegramNotification(newOrder);
         sendEmailNotification(newOrder);
 
