@@ -102,59 +102,59 @@
         let clickCount = 0;
         let clickTimer = null;
 
-        function handleAdminAccess() {
-            clickCount++;
-            clearTimeout(clickTimer);
-            clickTimer = setTimeout(() => { clickCount = 0; }, 1500);
+    function handleAdminAccess() {
+     clickCount++;
+     clearTimeout(clickTimer);
+     clickTimer = setTimeout(() => { clickCount = 0; }, 500);
 
-            if (clickCount >= 3) {
-                clickCount = 0;
-                const password = prompt("أدخل كلمة سر الإدارة لإضافة منتج جديد:");
-                // تم تحديث كلمة السر إلى kenouni19
-                if (password === "kenouni19") {     
-                toggleAdminModal();
-    document.querySelectorAll('.admin-delete-btn').forEach(btn => btn.style.display = 'inline-block');
+    if (clickCount >= 3) {
+        clickCount = 0;
+        const password = prompt("أدخل كلمة المرور:");
+        if (password === "kenouni19") {
+            toggleAdminModal();
+            document.querySelectorAll('.admin-delete-btn').forEach(btn => btn.style.display = 'inline-block');
+        } else if (password !== null) {
+            alert("كلمة المرور خاطئة!");
+
+        }
+    }
 }
 
-                } else if (password !== null) {
-                    alert("كلمة السر غير صحيحة!");
-                }            }
-        }
-
         async function loadProducts() {
-            const res = await fetch('/api/products');
-            const products = await res.json();
-            const grid = document.getElementById('productsGrid');
+    const res = await fetch('/api/products');
+    const products = await res.json();
+    const grid = document.getElementById('productsGrid');
 
-            if(products.length === 0) {
-                grid.innerHTML = `<div class="col-span-full text-center py-12 text-stone-400 font-bold">لا توجد منتجات معروضة حالياً.</div>`;
-                return;
-            }
+    if(products.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-12 text-stone-500">لا توجد منتجات حالياً</div>`;
+        return;
+    }
 
-            grid.innerHTML = products.map(p => `
-                <div class="bg-white rounded-3xl shadow-sm border border-stone-200 overflow-hidden flex flex-col p-4">
-                    <div class="h-64 bg-stone-100 rounded-2xl overflow-hidden mb-3">
-                        <img id="mainImg-${p.id}" src="${p.images[0]}" alt="${p.title}" class="w-full h-full object-cover transition-all duration-300">
-                    </div>
-
-                    ${p.images.length > 1 ? `
-                    <div class="flex gap-2 mb-4 justify-center overflow-x-auto py-1">
-                        ${p.images.map(img => `
-                            <img src="${img}" onclick="changeImg('mainImg-${p.id}', '${img}')" class="w-12 h-12 rounded-xl object-cover cursor-pointer border border-stone-300 hover:border-amber-900 transition">
-                        `).join('')}
-                    </div>
-                    ` : ''}
-
-                    <h4 class="font-bold text-xl mb-1 text-stone-900">${p.title}</h4>
-                    <p class="text-stone-500 text-sm mb-4 flex-grow">${p.description || ''}</p>
-                    
-                    <div class="flex justify-between items-center mt-auto pt-4 border-t border-stone-100">
-                        <span class="font-black text-amber-900 text-xl">${p.price}</span>
-                        <button onclick="openCheckout('${p.title}')" class="bg-stone-900 text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-amber-900 transition">اطلب الآن</button>
-                    </div>
+    grid.innerHTML = products.map(p => `
+        <div class="bg-white rounded-3xl shadow-sm border border-stone-200 p-4 flex flex-col justify-between">
+            <div>
+                <div class="h-64 bg-stone-100 rounded-2xl overflow-hidden mb-4">
+                    <img id="mainImg-${p.id}" src="${p.images[0]}" alt="${p.name}" class="w-full h-full object-cover">
                 </div>
-            `).join('');
-        }
+                ${p.images.length > 1 ? `
+                <div class="flex gap-2 mb-4 justify-center overflow-x-auto pb-1">
+                    ${p.images.map(img => `
+                        <img src="${img}" onclick="changeImg('mainImg-${p.id}', '${img}')" class="w-12 h-12 object-cover rounded-lg cursor-pointer border hover:border-amber-800">
+                    `).join('')}
+                </div>` : ''}
+                <h3 class="font-bold text-lg text-stone-800 mb-1">${p.name}</h3>
+                <p class="text-stone-500 text-sm mb-3">${p.description}</p>
+                <div class="text-amber-900 font-bold text-xl mb-4">${p.price} د.ج</div>
+            </div>
+            
+            <div class="space-y-2">
+                <button onclick="openCheckout('${p.name}', '${p.price}')" class="w-full bg-amber-800 text-white font-bold py-3 rounded-xl hover:bg-amber-900 transition">اطلب الآن</button>
+                <button onclick="deleteProduct('${p.id}')" class="admin-delete-btn bg-red-600 text-white font-bold py-2 px-3 rounded-xl text-sm hover:bg-red-700 transition w-full" style="display:none;">حذف المنتج 🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
 
         function changeImg(elementId, newSrc) {
             document.getElementById(elementId).src = newSrc;
