@@ -217,7 +217,22 @@
             window.open(`https://wa.me/${myPhoneNumber}?text=${message}`, '_blank');
             closeCheckout();
         }
+function handleAdminAccess() {
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => { clickCount = 0; }, 500);
 
+            if (clickCount >= 3) {
+                clickCount = 0;
+                const password = prompt("أدخل كلمة المرور:");
+                if (password === "kenouni19") {
+                    toggleAdminModal();
+                    document.querySelectorAll('.admin-delete-btn').forEach(btn => btn.style.display = 'block');
+                } else if (password !== null) {
+                    alert("كلمة المرور خاطئة!");
+                }
+            }
+        }
             <script>
         async function deleteProduct(id) {
             if (confirm("هل تريد حذف هذا المنتج حقاً؟")) {
