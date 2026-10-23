@@ -29,7 +29,7 @@
         </div>
     </main>
 
-    <!-- Image Zoom Modal (تكبير الصورة) -->
+    <!-- Image Zoom Modal -->
     <div id="imageZoomModal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center hidden p-4" onclick="closeImageZoom()">
         <div class="relative max-w-3xl w-full flex justify-center items-center">
             <button onclick="closeImageZoom()" class="absolute -top-10 right-0 text-white hover:text-stone-300 text-3xl font-bold">&times;</button>
@@ -37,26 +37,39 @@
         </div>
     </div>
 
-    <!-- Admin Modal for Adding Products -->
+    <!-- Admin Modal -->
     <div id="adminModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-        <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-3xl max-w-2xl w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="toggleAdminModal()" class="absolute top-4 left-4 text-stone-400 hover:text-stone-600 text-2xl font-bold">&times;</button>
-            <h2 class="text-xl font-bold text-amber-900 mb-4">إضافة منتج جديد 🛠️</h2>
+            <h2 class="text-xl font-bold text-amber-900 mb-4">لوحة تحكم الآدمن 🛠️</h2>
             
-            <form id="addProductForm" onsubmit="handleAddProduct(event)" class="space-y-3">
-                <input type="text" id="pName" placeholder="اسم المنتج" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800">
-                <textarea id="pDesc" placeholder="الوصف" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800"></textarea>
-                <input type="number" id="pPrice" placeholder="السعر للقطعة (د.ج)" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800">
-                
-                <label class="block text-sm font-bold text-stone-700 mt-2">صور المنتج (يمكن اختيار أكثر من صورة):</label>
-                <input type="file" id="pImages" multiple accept="image/*" required class="w-full p-2 border border-stone-300 rounded-xl">
-                
-                <button type="submit" class="w-full bg-amber-900 text-white font-bold py-3 rounded-xl hover:bg-amber-800 transition mt-2">نشر المنتج</button>
-            </form>
+            <div class="flex gap-2 mb-6">
+                <button onclick="showAdminTab('addProduct')" id="tabAddBtn" class="flex-1 bg-amber-900 text-white font-bold py-2 rounded-xl text-sm">إضافة منتج جديد</button>
+                <button onclick="showAdminTab('viewOrders')" id="tabOrdersBtn" class="flex-1 bg-stone-200 text-stone-700 font-bold py-2 rounded-xl text-sm">عرض الطلبات الواردة 📦</button>
+            </div>
+
+            <!-- Add Product Form -->
+            <div id="addProductSection">
+                <form id="addProductForm" onsubmit="handleAddProduct(event)" class="space-y-3">
+                    <input type="text" id="pName" placeholder="اسم المنتج" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800">
+                    <textarea id="pDesc" placeholder="الوصف" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800"></textarea>
+                    <input type="number" id="pPrice" placeholder="السعر للقطعة (د.ج)" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800">
+                    <label class="block text-sm font-bold text-stone-700 mt-2">صور المنتج:</label>
+                    <input type="file" id="pImages" multiple accept="image/*" required class="w-full p-2 border border-stone-300 rounded-xl">
+                    <button type="submit" class="w-full bg-amber-900 text-white font-bold py-3 rounded-xl hover:bg-amber-800 transition mt-2">نشر المنتج</button>
+                </form>
+            </div>
+
+            <!-- View Orders Section -->
+            <div id="viewOrdersSection" class="hidden">
+                <div id="ordersList" class="space-y-3">
+                    <p class="text-center text-stone-500 py-4">جاري تحميل الطلبات...</p>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Checkout Modal with Quantity & Wilayas -->
+    <!-- Checkout Modal -->
     <div id="checkoutModal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
         <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-xl relative max-h-[90vh] overflow-y-auto">
             <button onclick="closeCheckout()" class="absolute top-4 left-4 text-stone-400 hover:text-stone-600 text-2xl font-bold">&times;</button>
@@ -77,7 +90,6 @@
                 <input type="text" id="name" placeholder="الاسم الكامل" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800">
                 <input type="tel" id="phone" placeholder="رقم الهاتف" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800">
                 
-                <!-- اختر الولاية -->
                 <div>
                     <label class="block text-xs font-bold text-stone-600 mb-1">الولاية:</label>
                     <select id="wilaya" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800 font-bold bg-white">
@@ -87,7 +99,7 @@
 
                 <input type="text" id="address" placeholder="البلدية أو العنوان التفصيلي" required class="w-full p-3 border border-stone-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-800">
                 
-                <button type="submit" class="w-full bg-green-700 text-white font-bold py-3 rounded-xl hover:bg-green-800 transition">تأكيد عبر واتساب 📲</button>
+                <button type="submit" class="w-full bg-green-700 text-white font-bold py-3 rounded-xl hover:bg-green-800 transition">تأكيد وإرسال الطلب ✅</button>
             </form>
         </div>
     </div>
@@ -108,7 +120,6 @@
                 <a href="https://www.tiktok.com/@zasotuftingcrochet" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-stone-100 hover:bg-amber-100 text-stone-800 hover:text-amber-900 px-4 py-2 rounded-xl text-sm font-bold transition border border-stone-200">
                     <span>🎵 تيك توك</span>
                 </a>
-                <!-- تم إخفاء الرقم من الزر -->
                 <a href="https://wa.me/213796869800" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2 bg-green-50 hover:bg-green-100 text-green-700 px-4 py-2 rounded-xl text-sm font-bold transition border border-green-200">
                     <span>💬 تواصل معنا عبر واتساب</span>
                 </a>
@@ -120,7 +131,7 @@
         </div>
     </footer>
 
-    <!-- JavaScript Logic -->
+    <!-- JavaScript -->
     <script>
         const algeriaWilayas = [
             "01 - أدرار", "02 - الشلف", "03 - الأغواط", "04 - أم البواقي", "05 - باتنة", 
@@ -142,7 +153,6 @@
         let clickCount = 0;
         let clickTimer = null;
 
-        // ملء قائمة الولايات
         function populateWilayas() {
             const select = document.getElementById('wilaya');
             select.innerHTML = '<option value="">اختر الولاية...</option>';
@@ -164,7 +174,7 @@
                 const password = prompt("أدخل كلمة المرور الخاصة بالإدارة:");
                 if (password === "kenouni19") {
                     toggleAdminModal();
-                    document.querySelectorAll('.admin-delete-btn').forEach(btn => btn.style.display = 'block');
+                    loadAdminOrders();
                 } else if (password !== null) {
                     alert("كلمة المرور خاطئة!");
                 }
@@ -173,6 +183,26 @@
 
         function toggleAdminModal() {
             document.getElementById('adminModal').classList.toggle('hidden');
+        }
+
+        function showAdminTab(tab) {
+            const addSec = document.getElementById('addProductSection');
+            const ordSec = document.getElementById('viewOrdersSection');
+            const addBtn = document.getElementById('tabAddBtn');
+            const ordBtn = document.getElementById('tabOrdersBtn');
+
+            if (tab === 'addProduct') {
+                addSec.classList.remove('hidden');
+                ordSec.classList.add('hidden');
+                addBtn.className = "flex-1 bg-amber-900 text-white font-bold py-2 rounded-xl text-sm";
+                ordBtn.className = "flex-1 bg-stone-200 text-stone-700 font-bold py-2 rounded-xl text-sm";
+            } else {
+                addSec.classList.add('hidden');
+                ordSec.classList.remove('hidden');
+                ordBtn.className = "flex-1 bg-amber-900 text-white font-bold py-2 rounded-xl text-sm";
+                addBtn.className = "flex-1 bg-stone-200 text-stone-700 font-bold py-2 rounded-xl text-sm";
+                loadAdminOrders();
+            }
         }
 
         function openImageZoom(src) {
@@ -219,7 +249,7 @@
                 }
 
                 grid.innerHTML = products.map(p => {
-                    const prodName = p.name || p.title || 'منتج زاسو';
+                    const prodName = p.name || 'منتج زاسو';
                     const prodPrice = Number(p.price) || 0;
                     const mainImg = p.images && p.images[0] ? p.images[0] : '';
                     return `
@@ -242,7 +272,7 @@
                         
                         <div class="space-y-2">
                             <button onclick="openCheckout('${prodName.replace(/'/g, "\\'")}', '${prodPrice}')" class="w-full bg-amber-800 text-white font-bold py-3 rounded-xl hover:bg-amber-900 transition">اطلب الآن</button>
-                            <button onclick="deleteProduct('${p.id}')" class="admin-delete-btn bg-red-600 text-white font-bold py-2 px-3 rounded-xl text-sm hover:bg-red-700 transition w-full" style="display:none;">حذف المنتج 🗑️</button>
+                            <button onclick="deleteProduct('${p.id}')" class="bg-red-600 text-white font-bold py-2 px-3 rounded-xl text-sm hover:bg-red-700 transition w-full">حذف المنتج 🗑️</button>
                         </div>
                     </div>
                 `}).join('');
@@ -263,14 +293,11 @@
                 formData.append('images', files[i]);
             }
 
-            const res = await fetch('/api/products', {
-                method: 'POST',
-                body: formData
-            });
-
+            const res = await fetch('/api/products', { method: 'POST', body: formData });
             if (res.ok) {
                 alert('تم إضافة المنتج بنجاح!');
-                toggleAdminModal();
+                document.getElementById('addProductForm').reset();
+                showAdminTab('viewOrders');
                 loadProducts();
             } else {
                 alert('حدث خطأ أثناء إضافة المنتج');
@@ -290,20 +317,86 @@
             }
         }
 
-        function sendOrder(e) {
+        async function sendOrder(e) {
             e.preventDefault();
             const quantity = parseInt(document.getElementById('quantity').value) || 1;
             const name = document.getElementById('name').value;
             const phone = document.getElementById('phone').value;
             const wilaya = document.getElementById('wilaya').value;
             const address = document.getElementById('address').value;
-            const myPhoneNumber = "213796869800";
-
             const totalPrice = currentItemPrice * quantity;
-            const message = `طلب جديد من موقع ZASO:\n- المنتج: ${currentItemTitle}\n- الكمية: ${quantity}\n- السعر الإجمالي: ${totalPrice} د.ج\n- الاسم: ${name}\n- الهاتف: ${phone}\n- الولاية: ${wilaya}\n- العنوان التفصيلي: ${address}`;
 
-            window.open(`https://wa.me/${myPhoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
-            closeCheckout();
+            const orderData = {
+                product: currentItemTitle,
+                quantity: quantity,
+                totalPrice: totalPrice,
+                customerName: name,
+                customerPhone: phone,
+                wilaya: wilaya,
+                address: address
+            };
+
+            try {
+                const res = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(orderData)
+                });
+
+                if (res.ok) {
+                    closeCheckout();
+                    alert(`✅ شكرًا لك يا ${name}!\nتم تسجيل طلبك بنجاح وسنتصل بك قريبًا لتأكيد التوصيل.`);
+                } else {
+                    alert("حدث خطأ أثناء إرسال الطلب، يرجى المحاولة مرة أخرى.");
+                }
+            } catch (err) {
+                console.error("Order error:", err);
+                alert("تأكد من الاتصال بالإنترنت وأعد المحاولة.");
+            }
+        }
+
+        async function loadAdminOrders() {
+            const listDiv = document.getElementById('ordersList');
+            listDiv.innerHTML = `<p class="text-center text-stone-500 py-4">جاري التحميل...</p>`;
+            try {
+                const res = await fetch('/api/orders');
+                const orders = await res.json();
+
+                if (!orders || orders.length === 0) {
+                    listDiv.innerHTML = `<p class="text-center text-stone-500 py-6">لا توجد طلبات جديدة حالياً</p>`;
+                    return;
+                }
+
+                listDiv.innerHTML = orders.map(o => `
+                    <div class="bg-stone-50 border border-stone-200 rounded-2xl p-4 flex flex-col gap-2 shadow-sm">
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span class="font-bold text-amber-900">${o.product} (الكمية: ${o.quantity})</span>
+                            <span class="text-xs text-stone-400">${o.date}</span>
+                        </div>
+                        <div class="text-sm space-y-1 text-stone-700">
+                            <p>👤 <b>الاسم:</b> ${o.customerName}</p>
+                            <p>📞 <b>الهاتف:</b> <a href="tel:${o.customerPhone}" class="text-blue-600 underline">${o.customerPhone}</a></p>
+                            <p>📍 <b>الولاية والعنوان:</b> ${o.wilaya} - ${o.address}</p>
+                            <p>💰 <b>المبلغ الإجمالي:</b> <span class="font-bold text-green-700">${o.totalPrice} د.ج</span></p>
+                        </div>
+                        <button onclick="deleteOrder('${o.id}')" class="mt-2 bg-red-100 hover:bg-red-200 text-red-700 font-bold py-1.5 px-3 rounded-xl text-xs transition self-end">حذف الطلب 🗑️</button>
+                    </div>
+                `).join('');
+            } catch (err) {
+                listDiv.innerHTML = `<p class="text-center text-red-500 py-4">خطأ في تحميل الطلبات</p>`;
+            }
+        }
+
+        async function deleteOrder(id) {
+            if (confirm("هل تريد حذف هذا الطلب من السجل؟")) {
+                const res = await fetch(`/api/orders/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    loadAdminOrders();
+                } else {
+                    alert("فشل حذف الطلب");
+                }
+            }
         }
 
         populateWilayas();
@@ -311,3 +404,4 @@
     </script>
 </body>
 </html>
+
