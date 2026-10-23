@@ -1,26 +1,31 @@
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const multer = require('multer');
-const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const dir = path.join(__dirname, 'public/uploads');
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        cb(null, dir);
+        const uploadDir = path.join(__dirname, 'public', 'uploads');
+        if (!fs.existsSync(uploadDir)) {
+            fs.mkdirSync(uploadDir, { recursive: true });
+        }
+        cb(null, uploadDir);
     },
     filename: (req, file, cb) => {
         cb(null, Date.now() + '-' + file.originalname);
     }
 });
-const upload = multer({ storage });
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
+const upload = multer({ storage: storage });
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/uploads', express.static(path.join(__dirname, 'public', 'uploads')));
 
 const productsFile = path.join(__dirname, 'products.json');
 if (!fs.existsSync(productsFile)) {
@@ -33,16 +38,18 @@ app.get('/api/products', (req, res) => {
 });
 
 app.post('/api/products', upload.array('images', 5), (req, res) => {
-    const { title, price, description } = req.body;
-    const images = req.files ? req.files.map(f => '/uploads/' + f.filename) : [];
+    const productName = req.body.name || req.body.title || 'منتج زاسو';
+    const { price, description } = req.body;
+    const images = req.files ? req.files.map(f => `/uploads/${f.filename}`) : [];
 
     const products = JSON.parse(fs.readFileSync(productsFile));
     const newProduct = {
-        id: Date.now(),
-        title,
+        id: Date.now().toString(),
+        name: productName,
+        title: productName,
         price,
         description,
-        images: images.length > 0 ? images : ['https://placehold.co/400x400/f59e0b/ffffff?text=ZASO']
+        images: images.length > 0 ? images : ['https://placeholder.com/400x400/f59e0b/ffffff?text=ZASO']
     };
 
     products.unshift(newProduct);
@@ -51,10 +58,6 @@ app.post('/api/products', upload.array('images', 5), (req, res) => {
     res.json({ success: true, product: newProduct });
 });
 
-app.listen(PORT, () => {
-    console.log(`ZASO Store is running on http://localhost:${PORT}`);
-});
-// مسار حذف منتج
 app.delete('/api/products/:id', (req, res) => {
     const id = req.params.id;
     let products = JSON.parse(fs.readFileSync(productsFile));
@@ -62,3 +65,8 @@ app.delete('/api/products/:id', (req, res) => {
     fs.writeFileSync(productsFile, JSON.stringify(products, null, 2));
     res.json({ success: true });
 });
+
+app.listen(PORT, () => {
+    console.log(`ZASO Store is running on http://localhost:${PORT}`);
+});
+
