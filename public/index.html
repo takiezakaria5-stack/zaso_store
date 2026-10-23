@@ -218,25 +218,20 @@
             closeCheckout();
         }
 
-        loadProducts();
+            <script>
+        async function deleteProduct(id) {
+            if (confirm("هل تريد حذف هذا المنتج حقاً؟")) {
+                const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
+                const data = await res.json();
+                if (data.success) {
+                    alert("تم حذف المنتج بنجاح");
+                    location.reload();
+                } else {
+                    alert("فشل حذف المنتج");
+                }
+            }
+        }
     </script>
 </body>
 </html>
-<button onclick="deleteProduct('${product.id}')" class="admin-delete-btn bg-red-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-700 transition" style="display:none;">حذف المنتج 🗑️</button>
 
-</script>
-<script>
-async function deleteProduct(id) {
-    if (confirm("هل أنت متأكد من حذف هذا المنتج؟")) {
-        const res = await fetch(`/api/products/${id}`, { method: 'DELETE' });
-        const data = await res.json();
-        if (data.success) {
-            alert("تم حذف المنتج بنجاح!");
-            location.reload();
-        }
-    }
-}
-</script>
-
-</body>
-</html>
